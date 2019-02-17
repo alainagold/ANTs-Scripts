@@ -1,0 +1,20 @@
+ANTs Scripts 
+
+##Changing header file (.hrd) into brik and head files
+3dcopy $i.hrd $i
+3dcopy “name of header file” “output name”
+
+##Changing brik and head into nifti
+3dAFNItoNIFTI $i+orig
+3dAFNItoNIFTI name of brik and header file +orig
+
+##Making a template
+buildtemplateparallel.sh -d 3 -c 2 -o template.nii *.nii
+buildtemplateparallel.sh -d “# of dimensions” -c “control for parallel p=computation, 2 == localhost” -o “name of output template” *.nii (all nifty files to be used in the template)
+
+##Aligning individual scans to template scan
+/opt/ants/antsIntroduction.sh -d 3 -r template.nii -i *.nii
+/opt/ants/antsIntroduction.sh -d ImageDimension -r fixedScan.ext -i movingScan.ext
+
+##Getting Volume Data from Segmentations
+3dclust -isomerge -quiet -nosum 0 0 ROI_Amygdala_1_142+tlrc.BRIK | awk {print $11, $1}’
